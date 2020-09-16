@@ -5,7 +5,10 @@ import 'package:qrscan/qrscan.dart' as scanner;
 //import 'package:path_provider/path_provider.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:easyentry/db/db_helper.dart';
+import 'package:easyentry/model/location.dart';
 //import 'package:html/parser.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class ScanData {
   final String scanURL;
@@ -46,7 +49,7 @@ class _ScanState extends State<Scan> {
             ),
             FlatButton(
               padding: EdgeInsets.all(10.0),
-              child: Text("Tap to Scan QR!"),
+              child: Text("Tap to Scan QR!!"),
               onPressed: () async {
                 //var arr = ['Maria', 'Hotdog'];
                 //MAIN CODE FOR SCANNING QRS
@@ -67,16 +70,35 @@ class _ScanState extends State<Scan> {
                 // CODE FOR ALERT
                 Widget cancelButton = FlatButton(
                   child: Text("Cancel"),
-                  onPressed: () {
+                  onPressed: () async {
+                    Fluttertoast.showToast(
+                        msg: (await DbHelper.retrieveLocations()).toString(),
+                        toastLength: Toast.LENGTH_SHORT,
+                        gravity: ToastGravity.CENTER,
+                        timeInSecForIosWeb: 1,
+                        backgroundColor: Colors.red,
+                        textColor: Colors.white,
+                        fontSize: 16.0);
                     Navigator.of(context).pop();
                   },
                 );
 
                 Widget continueButton = FlatButton(
-                  child: Text("Yes i would like to"),
+                  child: Text("Yes i would like to X!!!"),
                   onPressed: () async {
                     if (await canLaunch(scanning)) {
+                      var testRetrieve = await DbHelper.retrieveLocations();
+                      var flag = 0;
                       await launch(scanning);
+                      Location location = Location(title: '$venue');
+                      for (Location loc in testRetrieve) {
+                        if (loc.getTitle() == venue) {
+                          flag = 1;
+                        }
+                      }
+                      if (flag != 1) {
+                        DbHelper.insertLocation(location);
+                      }
                     } else {
                       throw 'Could not launch $scanning';
                     }

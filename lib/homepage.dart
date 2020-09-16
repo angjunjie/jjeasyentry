@@ -23,7 +23,8 @@ class _HomepageState extends State<Homepage> {
             Image(
                 image: NetworkImage(
                     'https://d2gg9evh47fn9z.cloudfront.net/800px_COLOURBOX39210612.jpg')),
-            flatButton("SCAN QR CODE", Scan()),
+            scanQRButton("SCAN QR CODE", Scan()),
+            //retrieveDbButton("RETRIEVE DATABASE",   ),
             SizedBox(
               height: 10.0,
             ),
@@ -33,7 +34,21 @@ class _HomepageState extends State<Homepage> {
     );
   }
 
-  Widget flatButton(String text, Widget widget) {
+  Widget scanQRButton(String text, Widget widget) {
+    return FlatButton(
+      padding: EdgeInsets.all(10.0),
+      child: Text(text),
+      onPressed: () {
+        Navigator.of(context)
+            .push(MaterialPageRoute(builder: (context) => widget));
+      },
+      shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20.0),
+          side: BorderSide(color: Colors.blue, width: 3.0)),
+    );
+  }
+
+  Widget retrieveDbButton(String text, Widget widget) {
     return FlatButton(
       padding: EdgeInsets.all(10.0),
       child: Text(text),
